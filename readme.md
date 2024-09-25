@@ -1,4 +1,4 @@
-# NodeJS application with Passport.js local strategy with user sessions for web application and JWT for API access stored in a MongoDB
+# NodeJS application with Passport.js local strategy with user sessions for web application and JWT for API access, data stored in a MongoDB
 
 This is an example NodeJS application that is implemented with Passport.js for local login strategy (username/password). Pages can be secured to be accessed only after login process, protected with session cookies.
 ```
@@ -17,7 +17,7 @@ The login pages are designed to fit on mobile devices. Bootstrap 5.x is used and
 
 There are also options for API user authentication and JWT tokens for resource access. (can be used for mobile apps for example)
 
-# Pre-requisites
+## Pre-requisites
 - NodeJS server
 - MongoDB (local or hosted, reachable by Url)
 

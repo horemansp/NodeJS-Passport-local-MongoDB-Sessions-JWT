@@ -27,9 +27,9 @@ The login pages are designed to fit on mobile devices. Bootstrap 5.x is used and
 - You will need to have a MongoDB running or use MongoDB-Atlas online.
 
 **How to work with JWT for API access**
-1. POST <appUrl>/login with a body ```{"username":"your_registered_username","password":"your_password"}````
+1. POST <appUrl>/login with a body ```{"username":"your_registered_username","password":"your_password"}```
 This will return a token & refresh token
 2. GET <appUrl>/protected with a header 'Authorization' that containst the token
 This will give you the content of the route protected with the token (try the same without a token or valid token and it will fail)
-3. POST <appUrl>/token with the refresh token in the body ```{"refreshtoken":"the_refresh_token_your_received_before"}````
+3. POST <appUrl>/token with the refresh token in the body ```{"refreshtoken":"the_refresh_token_your_received_before"}```
 This will provide you a fresh token.

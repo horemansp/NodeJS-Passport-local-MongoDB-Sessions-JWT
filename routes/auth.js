@@ -13,6 +13,7 @@ const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 // Secret for JWT
 const JWT_SECRET = process.env.JWT_SECRET || 'some random secret 9544-';
 const VALIDATION_TIMEOUT = process.env.VALIDATION_TIMEOUT || '5m';
+const BASE_PATH = process.env.BASE_PATH || 'http://localhost:3000';
 
 // Register Route
 router.post('/register', async (req, res) => {
@@ -42,7 +43,7 @@ router.post('/register', async (req, res) => {
     await user.save();
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '5m' });
-    const verificationLink = `http://localhost:3000/auth/verify-email?token=${token}`;
+    const verificationLink = BASE_PATH + `/auth/verify-email?token=${token}`;
     await sendEmail(username, 'Verify your email', `<p>Please click the link to verify your email: <a href="${verificationLink}">Verify Email</a></p>`);
 
     res.status(200).send('{"message":"Registration successful. Please check your email to verify your account. (You may need to check your SPAM folder)"}');
@@ -93,7 +94,7 @@ router.post('/resend-verification', async (req, res) => {
     }
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '5m' });
-    const verificationLink = process.env.BASE_PATH + `/auth/verify-email?token=${token}`;
+    const verificationLink = BASE_PATH + `/auth/verify-email?token=${token}`;
     await sendEmail(username, 'Resend Email Verification', `<p>Please click the link to verify your email: <a href="${verificationLink}">Verify Email</a></p><p>If you did not requested a new verification link, then ignore this email.</p>`);
 
     res.status(200).send('{"message":"A new verification email has been sent. Follow the instructions. You can close this page. (Check you SPAM folder)"}');
@@ -184,6 +185,7 @@ router.post('/forgot-password', async (req, res) => {
 
     res.status(200).send('{"message":"If you provided a registered email you wil receive an email with instructions. You can close this page. (Check your SPAM folder)"}');
   } catch (err) {
+    console.log("Password reset request error:",err);
     res.status(500).send('{"message":"Something went wrong"}');
   }
 });

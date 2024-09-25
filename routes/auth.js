@@ -18,7 +18,11 @@ const APP_NAME = process.env.APP_NAME || 'NodeJS login app';
 // Register Route
 router.post('/register', async (req, res) => {
   console.log("Register user: ", req.body);
-  const { username, password } = req.body;
+  const { username, password, termsAndConditions, marketingConsent } = req.body;
+
+  if(!termsAndConditions){
+    return res.status(403).send('{"message":"You must agree with the terms and conditions"}');
+  }
 
   if (!validator.isEmail(username)) {
     return res.status(400).send('{"message":"Invalid email format"}');
@@ -37,7 +41,9 @@ router.post('/register', async (req, res) => {
     const user = new User({
       username,
       password,
-      isVerified: false
+      isVerified: false,
+      termsAndConditions,
+      marketingConsent
     });
     await user.save();
 

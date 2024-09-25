@@ -27,9 +27,29 @@ There are also options for API user authentication and JWT tokens for resource a
 
 If a user tries to load a page he will be prompted to login.
 If the user has not registered yet, he will have an option to register. He needs to provide a username (email format) and password (strenght is enforced)
+- The user needs to agree to the terms and conditions (enforced and checked by the route)
+- The user can agree to consent for marketing purposes
 - An email will be send with a verification link. (If the verification link is expired - after VALIDATION_TIMEOUT configured in .env - the user can request a new verification link. VALIDATION_TIMEOUT can be modified in .env file) makes use of a JWT in the link.
 - After succesful validation/verification of email, the user will be redirected to the login page.
 - If the user tries to login before he validated/verified his email address he will receive a message that he needs to validate first. (with an option to request a new validation/verification link)
+Validation status, terms&conditions, marketingconsent etc. I stored in the database.
+```
+{
+  "_id": {
+    "$oid": "66f4787a884057c77ab3df0d"
+  },
+  "username": "the.email@domain.com",
+  "password": "$2b$10$OPOtz81yvFVKMxYdhZmPBupnfllD45vAB2DNmcuMAVTsK/ivoeocm",
+  "isVerified": false,
+  "verificationToken": null,
+  "refreshToken": null,
+  "termsAndConditions": true,
+  "marketingConsent": false,
+  "createDate": "2024-09-25T20:54:18.835Z",
+  "__v": 0
+}
+```
+
   
 The login page contains options such as 'forgot password'
 - The forgot password will require to enter a registered email address. A link with reset instructions will be send to the email address if it exists in the database as a registered user. This link will be valid for VALIDATION_TIMEOUT value set in the .env file. (makes use of a JWT in the link)

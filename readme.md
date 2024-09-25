@@ -19,7 +19,7 @@ There are also options for API user authentication and JWT tokens for resource a
 
 ## Installation instructions
 - Download the package
-- run ```nmp install``` to install all dependent packages form the folder where the package.json is located.
+- run ```nmp install``` to install all dependent packages form the folder where the package.json is located. (on *nix you may require sudo)
 - modify the .env file with your secrets. (MongoDB URI, email credentials, token secrets, expiration times etc.)
 - You will need to have a MongoDB running or use MongoDB-Atlas online.
 

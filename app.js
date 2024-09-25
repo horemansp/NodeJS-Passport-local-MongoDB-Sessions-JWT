@@ -90,9 +90,29 @@ app.get('/', (req, res) => {
   }
 });
 
-app.get('/reset-password', (req, res) => {
+app.get('/index', (req, res) => {
+    if(req.isAuthenticated()){
+      res.render('index');
+    } else {
+        res.render('loginpages/login');
+    }
+  });
+
+  app.get('/account', (req, res) => {
+    if(req.isAuthenticated()){
+      res.render('account');
+    } else {
+        res.render('loginpages/login');
+    }
+  });
+
+  app.get('/reset-password', (req, res) => {
         res.render('loginpages/reset-password');
   });
+
+  app.get('/resend-validation', (req, res) => {
+    res.render('loginpages/validation');
+});
 
 // Start the server
 const PORT = process.env.PORT || 3000;

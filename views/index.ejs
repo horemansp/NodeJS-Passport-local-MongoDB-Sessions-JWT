@@ -1,52 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Welcome Page</title>
-  <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <title>SnowFrnds App</title>
 </head>
+<style>
+    .navbar-nav {
+        width: 100%;
+        justify-content: space-between;
+    }
+    .valid {
+        color: green;
+    }
+    .invalid {
+        color: red;
+    }
+    .modal-body {
+        font-size: 1rem; /* Ensures text is readable on mobile */
+    }
+    .password-field {
+        position: relative;
+    }
+    .toggle-password {
+        position: absolute;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
+    .input-group .form-control {
+        height: 40px; /* Adjust height for better mobile usability */
+    }
+</style>
 <body>
-  <!-- Navbar Header -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Welcome Page</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="resetPassword()">Change password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="logout()">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-  <!-- Main Welcome Section -->
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-8">
-        <h1 class="display-4">Secured page</h1>
-        <p>Welcome to this NodeJS application which is secured with Passport local strategy (username & passport) and uses MongoDB to store sessions.</p>
-        <p>For API access a JWT token is used.</p>
-        <p><a class="button-warning" href="#" onclick="logout()">Logout</a></p>
-      </div>
-    </div>
-  </div>
 
-  <!-- Bootstrap 5 JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
-            function logout() {
+<div class="container mt-5">
+    <h2 class="">Welcome to this NodeJS app with sessions for web pages and JWT for API call.</h2>
+    <p class="">Implemented with passport.js and mongoDB</p>
+    <p class="">The menu items allow you to reset your password & logout</p>
+</div>
+<!-- Reset Password Modal -->
+<div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="resetPasswordForm">
+                    <div class="mb-3 password-field">
+                        <label for="currentPassword" class="form-label">Current Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="currentPassword" required>
+                            <i class="toggle-password bi bi-eye" id="toggleCurrentPassword" onclick="toggleCurrentPasswordVisibility('currentPassword', 'toggleCurrentPassword')"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword password-field" class="form-label">New Password</label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="newPassword" required>
+                            <i class="toggle-password bi bi-eye" id="toggleNewPassword" onclick="toggleNewPasswordVisibility('newPassword', 'toggleNewPassword')"></i>
+                        </div>
+                        <div class="form-text">Password must meet the following criteria:</div>
+                        <ul id="passwordRequirements" class="mt-2">
+                            <li id="length" class="invalid">At least 8 characters</li>
+                            <li id="uppercase" class="invalid">At least one uppercase letter A-Z</li>
+                            <li id="number" class="invalid">At least one number character 0-9</li>
+                            <li id="special" class="invalid">At least one special character (-,@, $, !, %, *, ?, &)</li>
+                        </ul>
+                    </div>
+                    <div id="errorMessage" class="error-message text-danger"></div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function resetPassword() {
+        const modal = new bootstrap.Modal(document.getElementById('resetPasswordModal'));
+        modal.show();
+        //document.getElementById('errorMessage').style.display = 'none'; // Hide error message on open
+    }
+
+    const passwordField = document.getElementById('newPassword');
+    const currentPasswordField = document.getElementById('currentPassword');
+    const requirements = {
+        length: false,
+        uppercase: false,
+        number: false,
+        special: false
+    };
+
+    passwordField.addEventListener('input', function() {
+        const password = passwordField.value;
+
+        // Update requirements
+        requirements.length = password.length >= 8;
+        requirements.uppercase = /[A-Z]/.test(password);
+        requirements.number = /\d/.test(password);
+        requirements.special = /[-!@#$%^&*]/.test(password);
+
+        // Update the UI
+        document.getElementById('length').className = requirements.length ? 'valid' : 'invalid';
+        document.getElementById('uppercase').className = requirements.uppercase ? 'valid' : 'invalid';
+        document.getElementById('number').className = requirements.number ? 'valid' : 'invalid';
+        document.getElementById('special').className = requirements.special ? 'valid' : 'invalid';
+    });
+
+     // Handle Reset Password
+    async function handleResetPassword() {
+            const url = '/auth/change-password'; // Replace with your API URL
+            const newPassword = document.getElementById('newPassword').value;
+            const oldPassword = document.getElementById('currentPassword').value;
+            const credentials = {
+              oldPassword: oldPassword,
+              newPassword: newPassword
+            }
+
+            try {
+                // Make API call using fetch
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(credentials)
+                });
+
+                // Wait for JSON response
+                const data = await response.json();
+                console.log("data=",data);
+
+                // Check for successful response (status 200)
+                if (response.ok) {
+                    // Refresh the page on success
+                    document.getElementById('errorMessage').innerText = data.message;
+                } else {
+                    // Alert the response message if status is not 200
+                    //alert(`Login failed: ${data.message}`);
+                    document.getElementById('errorMessage').innerText = data.message;
+
+                }
+            } catch (error) {
+                // Handle any other errors (like network issues)
+                alert(`An error occurred: ${error.message}`);
+            }
+    }
+    document.getElementById('resetPasswordForm').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Prevent form from submitting the traditional way
+
+           // Call the login function and wait for completion
+            await handleResetPassword();
+    });
+
+  // Toggle password visibility function
+  function toggleCurrentPasswordVisibility(passwordFieldId, toggleIconId) {
+    const passwordField = document.getElementById(passwordFieldId);
+    const toggleIcon = document.getElementById(toggleIconId);
+
+        // Toggle between text and password type
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    }
+
+  // Toggle password visibility function
+  function toggleNewPasswordVisibility(passwordFieldId, toggleIconId) {
+    const passwordField = document.getElementById(passwordFieldId);
+    const toggleIcon = document.getElementById(toggleIconId);
+
+        // Toggle between text and password type
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordField.type = "password";
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    }
+
+
+        function logout() {
             fetch('/auth/logout', {
                 method: 'POST',
                 credentials: 'include' // Important for sending cookies
@@ -61,6 +229,6 @@
                 console.error('Error:', error);
             });
         }
-  </script>
+    </script>
 </body>
 </html>

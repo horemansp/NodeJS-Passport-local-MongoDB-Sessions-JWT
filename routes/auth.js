@@ -11,11 +11,12 @@ const router = express.Router();
 const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
 // Secret for JWT
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'some random secret 9544-';
+const VALIDATION_TIMEOUT = process.env.VALIDATION_TIMEOUT || '5m';
 
 // Register Route
 router.post('/register', async (req, res) => {
-  //console.log("Register user: ", req.body);
+  console.log("Register user: ", req.body);
   const { username, password } = req.body;
 
   if (!validator.isEmail(username)) {
@@ -30,6 +31,7 @@ router.post('/register', async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).send('{"message":"something went wrong"}');
+      console.log("User to register already exists");
     }
 
     const user = new User({
@@ -43,7 +45,7 @@ router.post('/register', async (req, res) => {
     const verificationLink = `http://localhost:3000/auth/verify-email?token=${token}`;
     await sendEmail(username, 'Verify your email', `<p>Please click the link to verify your email: <a href="${verificationLink}">Verify Email</a></p>`);
 
-    res.status(200).send('{"message":"Registration successful. Please check your email to verify your account."}');
+    res.status(200).send('{"message":"Registration successful. Please check your email to verify your account. (You may need to check your SPAM folder)"}');
   } catch (err) {
     res.status(500).send('{"message":"something went wrong"}');
   }
@@ -69,7 +71,8 @@ router.get('/verify-email', async (req, res) => {
     res.redirect('/?message=validation%20successful,%20please%20login');
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      return res.status(400).send('Verification token has expired. Please request a new one.');
+      console.log("Verification link expired, request new link");
+      return res.redirect('/resend-validation');
     }
     res.status(400).send('Invalid token or verification error');
   }
@@ -82,38 +85,40 @@ router.post('/resend-verification', async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).send('No account with that email found.');
+      return res.status(400).send('{"message":"Something went wrong."}');
     }
 
     if (user.isVerified) {
-      return res.status(400).send('This account is already verified.');
+      return res.status(400).send('{"message":"This account is already verified."}');
     }
 
     const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '5m' });
-    const verificationLink = process.env.BASE_PATH + `http://localhost:3000/auth/verify-email?token=${token}`;
-    await sendEmail(username, 'Resend Email Verification', `<p>Please click the link to verify your email: <a href="${verificationLink}">Verify Email</a></p>`);
+    const verificationLink = process.env.BASE_PATH + `/auth/verify-email?token=${token}`;
+    await sendEmail(username, 'Resend Email Verification', `<p>Please click the link to verify your email: <a href="${verificationLink}">Verify Email</a></p><p>If you did not requested a new verification link, then ignore this email.</p>`);
 
-    res.send('A new verification email has been sent.');
+    res.status(200).send('{"message":"A new verification email has been sent. Follow the instructions. You can close this page. (Check you SPAM folder)"}');
   } catch (err) {
-    res.status(500).send('Error resending verification email');
+    res.status(500).send('{"message":"Error resending verification email"}');
   }
 });
 
 // Login Route
 router.post('/login', async (req, res, next) => {
+  console.log("login:",req.body);
   const { username, password } = req.body;
-  //console.log("login request from:", req.body); //TODO: remove
+
   if (!validator.isEmail(username)) {
     return res.status(400).send('{"message":"Invalid email format"}');
   }
 
   try {
     const user = await User.findOne({ username });
-    if (!user) {
+    console.log("user:",user);
+    if (!user.username) {
       return res.status(400).send('{"message":"Something went wrong"}');
     }
     if (!user.isVerified) {
-      return res.status(400).send('Please verify your email before logging in.');
+      return res.status(401).send('{"message":"Please verify your email before logging in. You have received an email with instructions during registration process. Request a new link if you cannot find you validation link. (check your SPAM folder)"}');
     }
 
     // Use passport authentication if email is verified
@@ -171,13 +176,13 @@ router.post('/forgot-password', async (req, res) => {
     }
 
     // Generate a JWT token for password reset (expires in 15 minutes)
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '15m' });
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: VALIDATION_TIMEOUT });
 
     // Send the password reset email
-    const resetLink = `/reset-password?token=${token}`;
-    await sendEmail(username, 'Reset Your Password', `<p>Please click the link to reset your password: <a href="${resetLink}">Reset Password</a></p>`);
+    const resetLink = BASE_PATH + `/reset-password?token=${token}`;
+    await sendEmail(username, 'Reset Your Password', `<p>Please click the link to reset your password: <a href="${resetLink}">Reset Password</a></p><p>If you have not initiated a forgot-password then ignore this email.</p>`);
 
-    res.status(200).send('{"message":"If you provided a registered email you wil receive an email with instructions. (Check your SPAM folder)"}');
+    res.status(200).send('{"message":"If you provided a registered email you wil receive an email with instructions. You can close this page. (Check your SPAM folder)"}');
   } catch (err) {
     res.status(500).send('{"message":"Something went wrong"}');
   }

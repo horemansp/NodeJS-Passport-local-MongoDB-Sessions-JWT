@@ -27,7 +27,7 @@ There are also options for API user authentication and JWT tokens for resource a
 
 If a user tries to load a page he will be prompted to login.
 If the user has not registered yet, he will have an option to register. He needs to provide a username (email format) and password (strenght is enforced)
-- The user needs to agree to the terms and conditions (enforced and checked by the route)
+- The user needs to agree to the terms and conditions (enforced on the webpage and checked by the route)
 - The user can agree to consent for marketing purposes
 - An email will be send with a verification link. (If the verification link is expired - after VALIDATION_TIMEOUT configured in .env - the user can request a new verification link. VALIDATION_TIMEOUT can be modified in .env file) makes use of a JWT in the link.
 - After succesful validation/verification of email, the user will be redirected to the login page.

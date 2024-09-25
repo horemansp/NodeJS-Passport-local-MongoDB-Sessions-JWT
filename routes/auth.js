@@ -14,7 +14,7 @@ const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 const JWT_SECRET = process.env.JWT_SECRET || 'some random secret 9544-';
 const VALIDATION_TIMEOUT = process.env.VALIDATION_TIMEOUT || '5m';
 const BASE_PATH = process.env.BASE_PATH || 'http://localhost:3000';
-
+const APP_NAME = process.env.APP_NAME || 'NodeJS login app';
 // Register Route
 router.post('/register', async (req, res) => {
   console.log("Register user: ", req.body);
@@ -32,7 +32,6 @@ router.post('/register', async (req, res) => {
     const existingUser = await User.findOne({ username });
     if (existingUser) {
       return res.status(400).send('{"message":"something went wrong"}');
-      console.log("User to register already exists");
     }
 
     const user = new User({
@@ -72,7 +71,6 @@ router.get('/verify-email', async (req, res) => {
     res.redirect('/?message=validation%20successful,%20please%20login');
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
-      console.log("Verification link expired, request new link");
       return res.redirect('/resend-validation');
     }
     res.status(400).send('Invalid token or verification error');
@@ -105,7 +103,7 @@ router.post('/resend-verification', async (req, res) => {
 
 // Login Route
 router.post('/login', async (req, res, next) => {
-  console.log("login:",req.body);
+
   const { username, password } = req.body;
 
   if (!validator.isEmail(username)) {
@@ -114,7 +112,7 @@ router.post('/login', async (req, res, next) => {
 
   try {
     const user = await User.findOne({ username });
-    console.log("user:",user);
+
     if (!user.username) {
       return res.status(400).send('{"message":"Something went wrong"}');
     }
@@ -185,7 +183,7 @@ router.post('/forgot-password', async (req, res) => {
 
     res.status(200).send('{"message":"If you provided a registered email you wil receive an email with instructions. You can close this page. (Check your SPAM folder)"}');
   } catch (err) {
-    console.log("Password reset request error:",err);
+
     res.status(500).send('{"message":"Something went wrong"}');
   }
 });
@@ -208,8 +206,8 @@ router.post('/reset-password', async (req, res) => {
     // Update the user's password
     user.password = newPassword;
     await user.save();
-
-    res.send('{"message":"Password succesfully changed"}');
+    await sendEmail(username, APP_NAME +' Password was reset', `<p>Your password for the "${APP_NAME} was reseet.</p><p>If this was you, then ignore this email. If this was not you, then change your password as soon as possible</p>`);
+    res.send('{"message":"Password succesfully changed. Please logout and login again with your new password."}');
   } catch (err) {
     if (err.name === 'TokenExpiredError') {
       return res.status(400).send('{"message":"Password reset token has expired. Please request a new one."}');
@@ -235,7 +233,7 @@ router.post('/change-password', passport.authenticate('session'), async (req, re
 
     res.status(200).json({ message: 'Password changed successfully.' });
   } catch (error) {
-    console.error(error);
+
     res.status(500).json({ message: 'An error occurred while changing the password.' });
   }
 });

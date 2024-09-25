@@ -17,6 +17,10 @@ The login pages are designed to fit on mobile devices. Bootstrap 5.x is used and
 
 There are also options for API user authentication and JWT tokens for resource access. (can be used for mobile apps for example)
 
+# Pre-requisites
+- NodeJS server
+- MongoDB (local or hosted, reachable by Url)
+
 ## Installation instructions
 - Download the package
 - run ```nmp install``` to install all dependent packages form the folder where the package.json is located. (on *nix you may require sudo)

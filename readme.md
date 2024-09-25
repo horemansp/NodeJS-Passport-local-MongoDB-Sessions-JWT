@@ -32,9 +32,9 @@ If the user has not registered yet, he will have an option to register. He needs
 - If the user tries to login before he validated/verified his email address he will receive a message that he needs to validate first. (with an option to request a new validation/verification link)
   
 The login page contains options such as 'forgot password'
-- The forgot password will require to enter a registered email address. A link with reset instructions will be send. This link will be valid for VALIDATION_TIMEOUT value set in the .env file. (makes use of a JWT in the link)
+- The forgot password will require to enter a registered email address. A link with reset instructions will be send to the email address if it exists in the database as a registered user. This link will be valid for VALIDATION_TIMEOUT value set in the .env file. (makes use of a JWT in the link)
 - The reset instructions link will open a webpage to provide a new password and confirm the new password. Strenght will be checked. After succsesful change the user is redirected to the login page.
-- An email is send to the email address saying his password was changed. (and take action if this was not you)
+- An email is send to notify his password was changed. (and take action if this was not you)
 
 ## Protected web pages
 Once the user is succesfully loged in, he will have access to protected pages (he will receive a session cookie 'connect.id', this session is also stored in the database)

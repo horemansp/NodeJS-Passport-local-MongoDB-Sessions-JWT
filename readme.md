@@ -39,15 +39,15 @@ The login page contains options such as 'forgot password'
 ## Protected web pages
 Once the user is succesfully loged in, he will have access to protected pages (he will receive a session cookie 'connect.id', this session is also stored in the database)
 There are 2 menu options:
-1. Change password: The user has to provide his current password and the new password. Password strenght is checked. If succesfully changed an email notification will be send to the user. the user will be asked to logout and login again.
-2. Logout: This will log the user out, destroy his session cookie, remove it from the database and take him to the login page.
+1. **Change password:** The user has to provide his current password and the new password. Password strenght is checked. If succesfully changed an email notification will be send to the user. the user will be asked to logout and login again.
+2. **Logout:** This will log the user out, destroy his session cookie, remove it from the database and take him to the login page.
 
 
 ## How to work with JWT for API access (API calls)
-1. POST appUrl/login with a body ```{"username":"your_registered_username","password":"your_password"}```
+1. **POST appUrl/login** with a body ```{"username":"your_registered_username","password":"your_password"}```
 This will return a token & refresh token
-2. GET appUrl/protected with a header **'Authorization'** that containst the token
+2. **GET appUrl/protected** with a header **'Authorization'** that containst the token
 This will give you the content of the route protected with the token (try the same without a token or valid token and it will fail).
 A middleware is used to verify the JWT token validity.
-3. POST appUrl/token with the refresh token in the body ```{"refreshtoken":"the_refresh_token_your_received_before"}```
+3. **POST appUrl/token** with the refresh token in the body ```{"refreshtoken":"the_refresh_token_your_received_before"}```
 This will provide you a fresh token.

@@ -17,7 +17,6 @@ const BASE_PATH = process.env.BASE_PATH || 'http://localhost:3000';
 const APP_NAME = process.env.APP_NAME || 'NodeJS login app';
 // Register Route
 router.post('/register', async (req, res) => {
-  console.log("Register user: ", req.body);
   const { username, password, termsAndConditions, marketingConsent } = req.body;
 
   if(!termsAndConditions){

@@ -2,20 +2,20 @@
 
 This is an example NodeJS application that is implemented with Passport.js for local login strategy (username/password). Pages can be secured to be accessed only after login process, protected with session cookies.
 ```
- app.get('/account', (req, res) => {
+ app.get('/index', (req, res) => {
     if(req.isAuthenticated()){
-      res.render('account');
+      res.render('index.ejs');
     } else {
         res.render('loginpages/login');
     }
   });
 ```
 
-There are also options for API user authentication and JWT tokens for resource access. (can be used for mobile apps for example)
-
 The login pages are designed to fit on mobile devices. Bootstrap 5.x is used and work with modals. (popout)
 
 **The app is designed to use a valid email address as the login/username.**
+
+There are also options for API user authentication and JWT tokens for resource access. (can be used for mobile apps for example)
 
 ## Installation instructions
 - Download the package
@@ -34,6 +34,7 @@ If the user has not registered yet, he will have an option to register. He needs
 The login page contains options such as 'forgot password'
 - The forgot password will require to enter a registered email address. A link with reset instructions will be send. This link will be valid for VALIDATION_TIMEOUT value set in the .env file. (makes use of a JWT in the link)
 - The reset instructions link will open a webpage to provide a new password and confirm the new password. Strenght will be checked. After succsesful change the user is redirected to the login page.
+- An email is send to the email address saying his password was changed. (and take action if this was not you)
 
 ## Protected web pages
 Once the user is succesfully loged in, he will have access to protected pages (he will receive a session cookie 'connect.id', this session is also stored in the database)

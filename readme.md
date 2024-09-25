@@ -20,6 +20,7 @@ There are also options for API user authentication and JWT tokens for resource a
 ## Pre-requisites
 - NodeJS server
 - MongoDB (local or hosted, reachable by Url)
+- Email address with SMTP server
 
 ## Installation instructions
 - Download the package

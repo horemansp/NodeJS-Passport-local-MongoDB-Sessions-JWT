@@ -47,6 +47,7 @@ There are 2 menu options:
 1. POST appUrl/login with a body ```{"username":"your_registered_username","password":"your_password"}```
 This will return a token & refresh token
 2. GET appUrl/protected with a header **'Authorization'** that containst the token
-This will give you the content of the route protected with the token (try the same without a token or valid token and it will fail)
+This will give you the content of the route protected with the token (try the same without a token or valid token and it will fail).
+A middleware is used to verify the JWT token validity.
 3. POST appUrl/token with the refresh token in the body ```{"refreshtoken":"the_refresh_token_your_received_before"}```
 This will provide you a fresh token.

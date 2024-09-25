@@ -26,6 +26,18 @@ const UserSchema = new mongoose.Schema({
   refreshToken: {
     type: String,
     default:null
+  },
+  termsAndConditions: {
+    type: Boolean,
+    default:null
+  },
+  marketingConsent: {
+    type: Boolean,
+    default:null
+  },
+  createDate: {
+    type: String,
+    default:null
   }
 });
 
@@ -33,6 +45,11 @@ const UserSchema = new mongoose.Schema({
 UserSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, 10);
+  }
+  if (this.isModified('username')) {
+    const currentDate = new Date();
+    const isoDate = currentDate.toISOString();
+    this.createDate = isoDate;
   }
   next();
 });

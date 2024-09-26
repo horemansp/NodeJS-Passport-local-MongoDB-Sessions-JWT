@@ -1,4 +1,4 @@
-# NodeJS application with Passport.js local strategy with user sessions for web application and JWT for API access, data stored in a MongoDB
+# NodeJS application with Passport-local for user session based web page protection and & passport-JWT strategy for API access with JWT. Data stored in a MongoDB
 
 This is an example NodeJS application that is implemented with Passport.js for local login strategy (username/password). Pages can be secured to be accessed only after login process, protected with session cookies.
 ```
@@ -41,16 +41,16 @@ Validation status, terms&conditions, marketingconsent etc. I stored in the datab
 ```
 {
   "_id": {
-    "$oid": "66f4787a884057c77ab3df0d"
-  },
-  "username": "the.email@domain.com",
-  "password": "$2b$10$OPOtz81yvFVKMxYdhZmPBupnfllD45vAB2DNmcuMAVTsK/ivoeocm",
-  "isVerified": false,
+    "$oid": "66f4a962a1effd463cdcb585"
+    },
+  "username": "patrik@phconsul.com",
+  "password": "$2b$10$oQW9u2faWtlCJjcXov1h6.UqOsLBLA4XPbmd/hxkUTQAZe9VtYB2q",
+  "isVerified": true,
   "verificationToken": null,
-  "refreshToken": null,
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZjRhOTYyYTFlZmZkNDYzY2RjYjU4NSIsInVzZXJuYW1lIjoicGF0cmlrQHBoY29uc3VsLmNvbSIsImlhdCI6MTcyNzMxMTA5MCwiZXhwIjoxNzU4ODQ3MDkwfQ.TPWsq36VowHwnLlb7ttGQsGXu4dC8oGz0nzCTgGKE1k",
   "termsAndConditions": true,
   "marketingConsent": false,
-  "createDate": "2024-09-25T20:54:18.835Z",
+  "createDate": "2024-09-26T00:22:58.125Z",
   "__v": 0
 }
 ```
@@ -74,5 +74,17 @@ This will return a token & refresh token
 2. **GET appUrl/api_auth/protected** with a header **'Authorization'** that containst the token
 This will give you the content of the route protected with the token (try the same without a token or valid token and it will fail).
 A middleware is used to verify the JWT token validity.
-3. **POST appUrl/api_auth/token** with the refresh token in the body ```{"refreshtoken":"the_refresh_token_your_received_before"}```
+3. **POST appUrl/api_auth/refresh-token** with the refresh token in the body ```{"refreshtoken":"the_refresh_token_your_received_before"}```
 This will provide you a fresh token.
+
+Protected API routes:
+
+```
+// Protected route example
+api_router.get('/protected', passport.authenticate('jwt', { session: false }), async (req, res) => {
+  res.status(200).json({
+    message: 'You are successfully accessing a protected route!'
+  });
+});
+```
+

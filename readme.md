@@ -70,7 +70,7 @@ There are 2 menu options:
 
 ## How to work with JWT for API access (API calls)
 1. **POST appUrl/api_auth/login** with a body ```{"username":"your_registered_username","password":"your_password"}```
-This will return a token & refresh token
+This will return a token & refresh token (refresh token stored in MongoDB)
 2. **GET appUrl/api_auth/protected** with a header **'Authorization'** that containst the token
 This will give you the content of the route protected with the token (try the same without a token or valid token and it will fail).
 A middleware is used to verify the JWT token validity.

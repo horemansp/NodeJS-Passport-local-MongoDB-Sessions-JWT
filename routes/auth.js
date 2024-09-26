@@ -10,7 +10,7 @@ const router = express.Router();
 // Password validation regex
 const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
 
-// Secret for JWT
+// Secret for JWT is changed
 const JWT_SECRET = process.env.JWT_SECRET || 'some random secret 9544-';
 const VALIDATION_TIMEOUT = process.env.VALIDATION_TIMEOUT || '5m';
 const BASE_PATH = process.env.BASE_PATH || 'http://localhost:3000';

@@ -40,6 +40,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Passport configuration
+require('./config/passport')(passport);
+
 // Passport Local Strategy
 passport.use(new LocalStrategy(
   async (username, password, done) => {

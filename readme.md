@@ -1,5 +1,7 @@
 # NodeJS application with Passport-local for user session based web page protection and & Passport-JWT strategy for API access with JWT. Data stored in a MongoDB
 
+## Full working stack with login-register-reset-logoff-consent capabilities
+
 This is an example NodeJS application that is implemented with Passport.js for local login strategy (username/password). Pages can be secured to be accessed only after login process, protected with session cookies.
 ```
  app.get('/index', (req, res) => {
@@ -37,13 +39,14 @@ If the user has not registered yet, he will have an option to register. He needs
 - An email will be send with a verification link. (If the verification link is expired - after VALIDATION_TIMEOUT configured in .env - the user can request a new verification link. VALIDATION_TIMEOUT can be modified in .env file) makes use of a JWT in the link.
 - After succesful validation/verification of email, the user will be redirected to the login page.
 - If the user tries to login before he validated/verified his email address he will receive a message that he needs to validate first. (with an option to request a new validation/verification link)
+
 Validation status, terms&conditions, marketingconsent etc. I stored in the database.
 ```
 {
   "_id": {
     "$oid": "66f4a962a1effd463cdcb585"
     },
-  "username": "patrik@phconsul.com",
+  "username": "me@here.com",
   "password": "$2b$10$oQW9u2faWtlCJjcXov1h6.UqOsLBLA4XPbmd/hxkUTQAZe9VtYB2q",
   "isVerified": true,
   "verificationToken": null,
